@@ -110,10 +110,6 @@ class task_4_2:
         # 
         # >>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
         fs = self.fs2
-        # t = np.arange(0, len(self.data2)/fs,1/fs)
-        # plt.plot(t, self.clean2, label='clean')
-        # plt.plot(t, filtered, label='filtered')
-        # plt.show()
         # for cutoff in np.arange(0.255, 0.27, 0.001):
         # for nsig in np.arange(0.001, 0.3, 0.01):
         #     nsig = float(nsig)
@@ -131,6 +127,10 @@ class task_4_2:
         sos = butter(5, [0.3, 9.999999999], btype='bandstop', fs=fs, output='sos')
         filtered = sosfiltfilt(sos, filtered)
         filtered = np.array(filtered, dtype=np.float64)
+        # t = np.arange(0, len(self.data2)/fs,1/fs)
+        # plt.plot(t, self.clean2, label='clean')
+        # plt.plot(t, filtered, label='filtered')
+        # plt.show()
         return filtered
     
     def _compute_snr(self, clean, filtered):
