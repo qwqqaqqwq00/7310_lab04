@@ -52,6 +52,17 @@ class task_4_3:
         # >>>>>>>>>>>>>>> YOUR CODE HERE <<<<<<<<<<<<<<<
         # TODO:
         # >>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
+        n = len(s)
+        freqs = np.fft.fftfreq(n, d=1/fs)
+        fft_values = np.fft.fft(s)
+        magnitude = np.abs(fft_values)
+
+        peak_ids, _ = find_peaks(magnitude[:len(magnitude)//2])
+        frequency = freqs[peak_ids]
+        frequency = frequency[np.argsort(magnitude[peak_ids])][-2:]
+        frequency = np.sort(frequency)[::-1]
+        if len(frequency) < 2:
+            frequency = np.array([frequency[0], frequency[0]])
         frequency = np.array(frequency, dtype=np.float64)
         return frequency
         
@@ -85,6 +96,10 @@ class task_4_3:
         # >>>>>>>>>>>>>>> YOUR CODE HERE <<<<<<<<<<<<<<<
         # TODO:
         # >>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
+        t = np.arange(0, len(s)/fs, 1/fs)
+        r_t = s * np.cos(2*np.pi*fc*t)
+        demo_signal = r_t - np.max(s)/2
+        demo_signal /= np.max(np.abs(demo_signal))
         demo_signal = np.array(demo_signal, dtype=np.float64)
         return demo_signal
     
@@ -120,6 +135,10 @@ class task_4_3:
         # >>>>>>>>>>>>>>> YOUR CODE HERE <<<<<<<<<<<<<<<
         # TODO: 
         # >>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
+        x = np.arange(len(s))
+        valid_indices = x[~np.isnan(s)]
+        valid_values = s[~np.isnan(s)]
+        interpolated_signal = np.interp(x, valid_indices, valid_values)
         interpolated_signal = np.array(interpolated_signal, dtype=np.float64)
         return interpolated_signal
     
@@ -151,6 +170,13 @@ class task_4_3:
         # >>>>>>>>>>>>>>> YOUR CODE HERE <<<<<<<<<<<<<<<
         # TODO:
         # >>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
+        cutoff = 20  # Cutoff frequency in Hz
+        nyquist = 0.5 * fs
+        normal_cutoff = cutoff / nyquist
+        sos = butter(4, normal_cutoff, btype='low', output='sos')
+
+        # Apply the filter to the signal
+        filtered_signal = sosfiltfilt(sos, interpolated_signal)
         filtered_signal = np.array(filtered_signal, dtype=np.float64)
         return filtered_signal
         
